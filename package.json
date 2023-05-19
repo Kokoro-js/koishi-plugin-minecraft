@@ -1,0 +1,45 @@
+{
+  "name": "koishi-plugin-minecraft",
+  "description": "Minecraft 查询正版用户数据和服务器状态，现支持 MCMOD, Modrinth, CurseForge 模组搜索！",
+  "version": "0.6.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahdg6/koishi-plugin-minecraft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahdg6/koishi-plugin-minecraft/issues"
+  },
+  "license": "AGPLv3",
+  "scripts": {},
+  "keywords": [
+    "minecraft",
+    "mc"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.12.9",
+    "koishi-plugin-puppeteer": "^3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "koishi-plugin-puppeteer": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@xmcl/curseforge": "^2.0.0",
+    "@xmcl/modrinth": "^2.0.0",
+    "cheerio": "1.0.0-rc.12",
+    "fastest-levenshtein": "^1.0.16"
+  },
+  "dependencies": {
+    "@xmcl/curseforge": "^2.0.0",
+    "@xmcl/modrinth": "^2.0.0",
+    "cheerio": "1.0.0-rc.12",
+    "fastest-levenshtein": "^1.0.16"
+  }
+}

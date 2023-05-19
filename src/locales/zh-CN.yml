@@ -1,0 +1,67 @@
+commands:
+  mcuser:
+    description: 通过 MoJang API 查询正版用户信息
+    usage: |-
+      会返回用户的名称对应的 UUID 还有皮肤渲染图和头
+  mcuuid:
+    description: 通过 MoJang API 获取正版用户的 UUID
+    usage: |-
+      会返回玩家的 UUID
+  mcskin:
+    description: 通过第三方服务输出玩家皮肤渲染图
+    usage: |-
+      会返回玩家的皮肤
+  mchead:
+    description: 通过 MoJang API 获取正版用户的头
+    usage: |-
+      会返回获取的头的指令，和渲染图
+  mcserver:
+    description: 查询服务器
+    usage: |-
+      通过第三方服务获取 motd
+      mcserver hypixel.net
+
+  modrinth:
+    description: 通过 modrinth 查询资源
+    usage: |-
+      mr sodium -t mod -a -l 10
+      在模组类型中检索名为 sodium 的 Fabric 模组(返回数等于 10)
+      更多选项请使用 help mr
+
+    shortcuts:
+      mr: 通过 modrinth 查询资源
+
+    options:
+      fabric: 添加检索条件 Fabric
+      forge: 添加检索条件 Forge
+      quilt: 添加检索条件 Quilt
+      type: 检索类型 支持的：mod, plugin, datapack, shader, resourcepack, modpack
+      version: 指定版本 -v 1.12.2
+      limit: 返回数据数 指定返回的数据数，默认为 5
+
+  curseforge:
+    description: 通过 curseforge 查询资源
+    usage: |-
+      cf Sky -t shaderpack -s 10
+      在光影类型中检索名为 Sky 的光影(返回数等于 10)
+      更多选项请使用 help cf
+
+    shortcuts:
+      cf: 通过 curseforge 查询模组，资源包，光影包
+
+    options:
+      type: [mod|resourcepack|modpack]
+      size: 指定返回的数据数，默认为 5
+
+  mcmod:
+    description: 通过 mcmod 查询资料
+    usage: |-
+      mcmod Sky -t modpack
+      在整合包类型中检索名为 Sky 的整合包
+      更多选项请使用 help mcmod
+
+    shortcuts:
+      mod: 通过 mcmod 查询模组，整合包，物品资料，教程等
+
+    options:
+      type: 可用检索类型 ['mod', 'modpack', 'item', 'post', 'author', 'user', 'bbs']
