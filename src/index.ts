@@ -207,9 +207,9 @@ export function apply(ctx: Context, config: Config) {
         };
         const output = h('figure');
         for (const project of result.slice(1)) {
-          output.children.push(h('message', attrs, `最可能的结果：${first.title}}
-      描述：${first.introduce}
-      链接: ${first.link}`))
+          output.children.push(h('message', attrs, `最可能的结果：${project.title}}
+          描述：${project.introduce}
+          链接: ${project.link}`))
         }
         await session.send(output)
       }
