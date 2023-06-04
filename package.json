@@ -22,13 +22,7 @@
     "mc"
   ],
   "peerDependencies": {
-    "koishi": "^4.12.9",
-    "koishi-plugin-puppeteer": "^3.5.0"
-  },
-  "peerDependenciesMeta": {
-    "koishi-plugin-puppeteer": {
-      "optional": true
-    }
+    "koishi": "^4.12.9"
   },
   "devDependencies": {
     "@xmcl/curseforge": "^2.0.0",

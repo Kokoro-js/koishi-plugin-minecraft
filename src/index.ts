@@ -19,6 +19,7 @@ export function apply(ctx: Context, config: Config) {
   ctx.i18n.define('zh', require('./locales/zh-CN'))
 
   const client = new ModrinthV2Client()
+  const mcModtypes = ['mod', 'modpack', 'item', 'post', 'author', 'user', 'bbs']
   let canUseCF = false
   let cfapi
   try {
@@ -185,9 +186,8 @@ export function apply(ctx: Context, config: Config) {
     .action(async ({session, options}, query) => {
       let search = `https://search.mcmod.cn/s?key=${query}`
       if (options.type) {
-        const types = ['mod', 'modpack', 'item', 'post', 'author', 'user', 'bbs']
-        let type = closest(options.type, types)
-        const indexPlusOne = findIndexPlusOne(types, type);
+        let type = closest(options.type, mcModtypes)
+        const indexPlusOne = findIndexPlusOne(mcModtypes, type);
         search += `&filter=${indexPlusOne}`
       }
       let result = await scrapeWebsite(search)
@@ -207,7 +207,7 @@ export function apply(ctx: Context, config: Config) {
         };
         const output = h('figure');
         for (const project of result.slice(1)) {
-          output.children.push(h('message', attrs, `最可能的结果：${project.title}}
+          output.children.push(h('message', attrs, `${project.title}
           描述：${project.introduce}
           链接: ${project.link}`))
         }
