@@ -27,6 +27,7 @@ commands:
       mr sodium -t mod -a -l 10
       在模组类型中检索名为 sodium 的 Fabric 模组(返回数等于 10)
       更多选项请使用 help mr
+      GitHub: ahdg6/koishi-plugin-minecraft
 
     shortcuts:
       mr: 通过 modrinth 查询资源
@@ -38,6 +39,7 @@ commands:
       type: 检索类型 支持的：mod, plugin, datapack, shader, resourcepack, modpack
       version: 指定版本 -v 1.12.2
       limit: 返回数据数 指定返回的数据数，默认为 5
+      silent: 该消息只有你能看到
 
   curseforge:
     description: 通过 curseforge 查询资源
@@ -45,13 +47,15 @@ commands:
       cf Sky -t shaderpack -s 10
       在光影类型中检索名为 Sky 的光影(返回数等于 10)
       更多选项请使用 help cf
+      GitHub: ahdg6/koishi-plugin-minecraft
 
     shortcuts:
       cf: 通过 curseforge 查询模组，资源包，光影包
 
     options:
       type: [mod|resourcepack|modpack]
-      size: 指定返回的数据数，默认为 5
+      limit: 指定返回的数据数，默认为 5
+      silent: 该消息只有你能看到
 
   mcmod:
     description: 通过 mcmod 查询资料
@@ -59,9 +63,13 @@ commands:
       mcmod Sky -t modpack
       在整合包类型中检索名为 Sky 的整合包
       更多选项请使用 help mcmod
+      GitHub: ahdg6/koishi-plugin-minecraft
 
     shortcuts:
       mod: 通过 mcmod 查询模组，整合包，物品资料，教程等
+      silent: 该消息只有你能看到
+      limit: 限制返回数量，默认为 5
 
     options:
       type: 可用检索类型 ['mod', 'modpack', 'item', 'post', 'author', 'user', 'bbs']
+      limit: 返回数据数 指定返回的数据数，默认为 5

@@ -1,12 +1,12 @@
 import * as cheerio from 'cheerio';
 
-interface Result {
+export interface Result {
   title: string;
   link: string;
   introduce: string;
 }
 
-export async function scrapeWebsite(url: string) {
+export async function scrapeWebsite(url: string, litmit: number) {
   try {
     const response = await fetch(url);
     const html = await response.text();
@@ -18,7 +18,9 @@ export async function scrapeWebsite(url: string) {
       const link = $(element).find('.foot .info .value a').attr('href');
       const introduce = $(element).find('.body').text();
       // const category =  $(element).find('.head').text();
-      results.push({title, link, introduce})
+      if (results.length < litmit) {
+        results.push({title, link, introduce})
+      }
       // 如果 category 没文本，就证明是大类分类
       // if (category) {
       //   results.push({title: category + title, link, introduce})

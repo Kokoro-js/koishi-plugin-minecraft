@@ -3,8 +3,11 @@ import * as mcapi from './api'
 import {ModrinthV2Client, SearchProjectOptions, SearchResult} from '@xmcl/modrinth'
 import { CurseforgeV1Client, SearchOptions, Mod } from '@xmcl/curseforge'
 import {closest} from 'fastest-levenshtein'
-import type { } from "koishi-plugin-puppeteer"
+import type { } from "@koishijs/plugin-adapter-kook"
 import {scrapeWebsite} from "./mcmod";
+import {Kook} from "@koishijs/plugin-adapter-kook";
+import {KookCard} from "./helper";
+
 export const name = 'minecraft'
 
 export interface Config {
@@ -20,11 +23,9 @@ export function apply(ctx: Context, config: Config) {
 
   const client = new ModrinthV2Client()
   const mcModtypes = ['mod', 'modpack', 'item', 'post', 'author', 'user', 'bbs']
-  let canUseCF = false
-  let cfapi
+  let cfapi: CurseforgeV1Client
   try {
     cfapi = new CurseforgeV1Client(config.CURSEFORGE_API_KEY)
-    canUseCF = true
   } catch (e) {
     console.log("未能初始化 CurseForge API，已关闭在 CurseForge 搜索模组的功能")
   }
@@ -36,6 +37,12 @@ export function apply(ctx: Context, config: Config) {
 
       const [skin, headInfo] =
         await Promise.all([mcapi.skin(uName), mcapi.head(uName, 250)]);
+
+      if (session.platform == 'kook') {
+        await session.kook.createMessage({content: JSON.stringify(KookCard.UserCard(userInfo.name, userInfo.id, headInfo.gethead.old, headInfo.gethead.new, skin.sideview, skin.download))
+          , target_id: session.channelId, type: Kook.Type.card, quote: session.messageId })
+        return
+      }
 
       const attrs = {
         userId: session.userId,
@@ -69,19 +76,21 @@ export function apply(ctx: Context, config: Config) {
     .action(async ({session}, uName) => {
       const skin = await mcapi.skin(uName);
 
-      await session.send(h('message', skin.download));
-      await session.send(h('image', { url: skin.sideview }));
+      return `<image url="${skin.sideview}"/> ${skin.download}`
     });
 
   ctx.command('mchead <uName:string>')
     .action(async ({session}, uName) => {
       const headInfo = await mcapi.head(uName, 250);
-
-      await session.send(h('message', `获取该玩家的头:
+      if (session.platform == 'kook') {
+        await session.kook.createMessage({content: JSON.stringify(KookCard.HeadCard(uName, headInfo.gethead.old, headInfo.gethead.new, headInfo.helmhead))
+          , target_id: session.channelId, type: Kook.Type.card, quote: session.messageId })
+        return
+      }
+      return `<image url="${headInfo.helmhead}"/>
+      获取该玩家的头:
       1.12: ${headInfo.gethead.old}
-      1.13+: ${headInfo.gethead.new}`));
-
-      await session.send(h('image', { url: headInfo.helmhead }));
+      1.13+: ${headInfo.gethead.new}`
     });
 
   ctx.command('mcserver <ip:string>')
@@ -95,6 +104,7 @@ export function apply(ctx: Context, config: Config) {
     .option('fabric', '-a')
     .option('forge', '-f')
     .option('quilt', '-q')
+    .option('silent', '-s', { fallback: false })
     .option('type', '-t [type:string]')
     .option('version', '-v [version:string]')
     .option('limit', '-l [limit:posint]', { fallback: 5 })
@@ -115,11 +125,23 @@ export function apply(ctx: Context, config: Config) {
         await session.send("没找到任何匹配的内容，请尝试换一些关键词和条件吧。")
         return
       }
+
+      if (session.platform == 'kook') {
+        const user = await session.kook.getUserView({user_id: session.userId})
+        const content = JSON.stringify(KookCard.searchModrinthCard(result.hits, options.silent, searchOptions, user.avatar, user.username))
+        const parse = {content: content
+          , target_id: session.channelId, type: Kook.Type.card }
+        if (options.silent) parse["temp_target_id"] = session.userId
+        await session.kook.createMessage(parse)
+        await session.kook.deleteMessage({msg_id: session.messageId})
+        return
+      }
+
       const first = result.hits[0]
       await session.send(`最可能的结果：${first.title}(${first.project_id}) 作者：${first.author}
-      类别：${first.categories} 支持版本：${first.versions}
-      描述：${first.description}
-      链接: https://modrinth.com/project/${first.project_id}`)
+        类别：${first.categories} 支持版本：${first.versions}
+        描述：${first.description}
+        链接: https://modrinth.com/project/${first.project_id}`)
       if (session.platform == 'onebot') {
         const attrs = {
           userId: session.userId,
@@ -134,13 +156,15 @@ export function apply(ctx: Context, config: Config) {
         }
         await session.send(output)
       }
+
     })
 
   ctx.command('curseforge <query:string>').alias('cf')
     .option('type', '-t [type:string]', {fallback: 'mod'})
-    .option('size', '-s [limit:posint]', { fallback: 5 })
+    .option('limit', '-l [limit:posint]', { fallback: 5 })
+    .option('silent', '-s', { fallback: false })
     .action(async ({session, options}, query) => {
-      if (!canUseCF) {
+      if (!cfapi) {
         await session.send("CurseForge API 不可用")
         return
       }
@@ -153,7 +177,7 @@ export function apply(ctx: Context, config: Config) {
       const searchOptions: SearchOptions = {
         categoryId: category,
         searchFilter: query,
-        pageSize: options.size,
+        pageSize: options.limit,
       };
       const result = await cfapi.searchMods(searchOptions)
       const mods: Mod[] = result.data
@@ -161,6 +185,18 @@ export function apply(ctx: Context, config: Config) {
         await session.send("没找到任何匹配的内容，请尝试换一些关键词和条件吧。")
         return
       }
+
+      if (session.platform == 'kook') {
+        const user = await session.kook.getUserView({user_id: session.userId})
+        const content = JSON.stringify(KookCard.searchCurseForgeCard(mods, options.silent, searchOptions, user.avatar, user.username))
+        const parse = {content: content
+          , target_id: session.channelId, type: Kook.Type.card }
+        if (options.silent) parse["temp_target_id"] = session.userId
+        await session.kook.createMessage(parse)
+        await session.kook.deleteMessage({msg_id: session.messageId})
+        return
+      }
+
       const first = mods[0]
       await session.send(`最可能的结果：${first.name}(${first.slug}) 一作：${first.authors[0].name}
       描述：${first.summary}
@@ -183,18 +219,33 @@ export function apply(ctx: Context, config: Config) {
 
   ctx.command('mcmod <query:string>').alias('mod')
     .option('type', '-t [type:string]')
+    .option('silent', '-s', { fallback: false })
+    .option('limit', '-l [limit:posint]', { fallback: 5 })
     .action(async ({session, options}, query) => {
       let search = `https://search.mcmod.cn/s?key=${query}`
+      let type = 'all'
       if (options.type) {
-        let type = closest(options.type, mcModtypes)
+        type = closest(options.type, mcModtypes)
         const indexPlusOne = findIndexPlusOne(mcModtypes, type);
         search += `&filter=${indexPlusOne}`
       }
-      let result = await scrapeWebsite(search)
+      let result = await scrapeWebsite(search, options.limit)
       if (result.length == 0) {
         await session.send("没找到任何匹配的内容，请尝试换一些关键词和条件吧。")
         return
       }
+
+      if (session.platform == 'kook') {
+        const user = await session.kook.getUserView({user_id: session.userId})
+        const content = JSON.stringify(KookCard.searchMCMODCard(result, options.silent, query, type, user.avatar, user.username))
+        const parse = {content: content
+          , target_id: session.channelId, type: Kook.Type.card }
+        if (options.silent) parse["temp_target_id"] = session.userId
+        await session.kook.createMessage(parse)
+        await session.kook.deleteMessage({msg_id: session.messageId})
+        return
+      }
+
       const first = result[0]
       await session.send(`最可能的结果：${first.title}
       描述：${first.introduce}

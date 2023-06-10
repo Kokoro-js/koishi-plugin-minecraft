@@ -31,8 +31,8 @@
     "fastest-levenshtein": "^1.0.16"
   },
   "dependencies": {
-    "@xmcl/curseforge": "^2.0.0",
-    "@xmcl/modrinth": "^2.0.0",
+    "@xmcl/curseforge": "^2.0.2",
+    "@xmcl/modrinth": "^2.0.2",
     "cheerio": "1.0.0-rc.12",
     "fastest-levenshtein": "^1.0.16"
   }
