@@ -1,7 +1,6 @@
 import {SearchProjectOptions, SearchResultHit} from "@xmcl/modrinth";
+import { SearchOptions, Mod } from '@xmcl/curseforge'
 import {Result} from "./mcmod";
-import {CurseForgeMod} from "curseforge-api";
-import {CurseForgeSearchModsOptions} from "curseforge-api/v1/Options";
 
 export class KookCard {
   static searchModrinthCard(hits: SearchResultHit[], view: boolean, options: SearchProjectOptions, avast: string, name: string) {
@@ -55,7 +54,7 @@ export class KookCard {
     return jsonObject
   }
 
-  static searchCurseForgeCard(hits: CurseForgeMod[], view: boolean, options: CurseForgeSearchModsOptions, type: string, avast: string, name: string) {
+  static searchCurseForgeCard(hits: Mod[], view: boolean, options: SearchOptions, type: string, avast: string, name: string) {
     let title = 'CurseForge 模组搜索'
     if (view) title += '(结果仅有您看到)'
     let jsonObject = [{

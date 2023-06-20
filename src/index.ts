@@ -1,11 +1,10 @@
 import {Context, h, Schema} from 'koishi'
 import * as mcapi from './api'
-import {ModrinthV2Client, SearchProjectOptions, SearchResult} from '@xmcl/modrinth'
-import {CurseForgeClient, CurseForgeGameEnum} from 'curseforge-api';
+import { ModrinthV2Client, SearchProjectOptions, SearchResult} from '@xmcl/modrinth'
+import { CurseforgeV1Client, SearchOptions } from '@xmcl/curseforge'
 import {closest} from 'fastest-levenshtein'
 import {scrapeWebsite} from "./mcmod"
 import {KookCard} from "./helper";
-import {CurseForgeSearchModsOptions} from "curseforge-api/v1/Options";
 import {MCUser} from "./api";
 
 export const name = 'minecraft'
@@ -27,7 +26,7 @@ export function apply(ctx: Context, config: Config) {
   let kook: typeof import('@koishijs/plugin-adapter-kook');
   loadModules().catch()
   async function loadModules() { if (!kook) kook = await import('@koishijs/plugin-adapter-kook'); }
-  const cfapi = new CurseForgeClient(config.CURSEFORGE_API_KEY);
+  const cfapi = new CurseforgeV1Client(config.CURSEFORGE_API_KEY);
 
   ctx.command('mcuser <uName:string>')
     .action(async ({session}, uName) => {
@@ -179,23 +178,24 @@ export function apply(ctx: Context, config: Config) {
         return
       }
       let classid;
+      let type;
       if (options.type) {
-        let type = closest(options.type, ['mod', 'resourcepack', 'shader', 'maps', 'modpacks'])
+        type = closest(options.type, ['mod', 'resourcepack', 'shader', 'maps', 'modpacks'])
         switch (type) {
           case 'modpacks': classid = 4471; break
           case 'resourcepacks': classid = 12; break
           case 'shader' : classid = 4546; break
-          case 'maps': classid = 5;
-          default: classid =6;
+          case 'maps': classid = 5; break
+          default: classid = 6
         }
       }
 
-      const searchOptions : CurseForgeSearchModsOptions = {
+      const searchOptions : SearchOptions = {
         ...(classid ? { classId: classid } : null),
         searchFilter: query,
         pageSize: options.limit,
       }
-      const result = await cfapi.searchMods(CurseForgeGameEnum.Minecraft, searchOptions)
+      const result = await cfapi.searchMods(searchOptions)
       const mods = result.data
       if (mods.length == 0) {
         await session.send("没找到任何匹配的内容，请尝试换一些关键词和条件吧。")
@@ -204,7 +204,7 @@ export function apply(ctx: Context, config: Config) {
 
       if (session.platform == 'kook') {
         const user = await session.kook.getUserView({user_id: session.userId})
-        const content = JSON.stringify(KookCard.searchCurseForgeCard(mods, options.silent, searchOptions, classid, user.avatar, user.username))
+        const content = JSON.stringify(KookCard.searchCurseForgeCard(mods, options.silent, searchOptions, type, user.avatar, user.username))
         const parse = {content: content
           , target_id: session.channelId, type: kook.Kook.Type.card }
         if (options.silent) parse["temp_target_id"] = session.userId
