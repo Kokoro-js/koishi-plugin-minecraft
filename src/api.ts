@@ -16,7 +16,7 @@ export function renderView(user: MCUser) {
     skinBust: `${render}/bust/${user.id}`,
     skinView: `${render}/full/${user.id}`,
     download: `${render}/processedskin/${user.id}`,
-    headView: `${render}/head/body/${user.id}`,
+    headView: `${render}/head/${user.id}`,
     headFace: `${render}/face/${user.id}`,
     gethead: {
       "new": `/give @p minecraft:player_head{SkullOwner:"${user.name}"}`,
