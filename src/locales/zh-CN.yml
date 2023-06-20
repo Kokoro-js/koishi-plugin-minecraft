@@ -53,7 +53,7 @@ commands:
       cf: 通过 curseforge 查询模组，资源包，光影包
 
     options:
-      type: [mod|resourcepack|modpack]
+      type: 支持使用 [ mod | resourcepack | shader | maps | modpack]
       limit: 指定返回的数据数，默认为 5
       silent: 该消息只有你能看到
 

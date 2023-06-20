@@ -1,7 +1,7 @@
 import {SearchProjectOptions, SearchResultHit} from "@xmcl/modrinth";
-import { SearchOptions, Mod } from '@xmcl/curseforge'
 import {Result} from "./mcmod";
-import * as mcapi from './api'
+import {CurseForgeMod} from "curseforge-api";
+import {CurseForgeSearchModsOptions} from "curseforge-api/v1/Options";
 
 export class KookCard {
   static searchModrinthCard(hits: SearchResultHit[], view: boolean, options: SearchProjectOptions, avast: string, name: string) {
@@ -55,7 +55,7 @@ export class KookCard {
     return jsonObject
   }
 
-  static searchCurseForgeCard(hits: Mod[], view: boolean, options: SearchOptions, avast: string, name: string) {
+  static searchCurseForgeCard(hits: CurseForgeMod[], view: boolean, options: CurseForgeSearchModsOptions, type: string, avast: string, name: string) {
     let title = 'CurseForge 模组搜索'
     if (view) title += '(结果仅有您看到)'
     let jsonObject = [{
@@ -82,7 +82,7 @@ export class KookCard {
             },
             {
               "type": "kmarkdown",
-              "content": `由 ${name} 搜索，使用关键词 ${options.searchFilter}, 返回数 ${hits.length}/${options.pageSize}`
+              "content": `由 ${name} 搜索，使用关键词 ${options.searchFilter}, 类型: ${type} 返回数 ${hits.length}/${options.pageSize}`
             }
           ]
         }
@@ -98,7 +98,7 @@ export class KookCard {
         },
         "text": {
           "type": "kmarkdown",
-          "content": `[${project.name}](${project.url}) | 作者 **${project.authors[0].name}**\n**简介**: ${project.summary}`
+          "content": `[${project.name}](https://legacy.curseforge.com/projects/${project.id}) | 作者 **${project.authors[0].name}** | 下载量 **${project.downloadCount}\n**简介**: ${project.summary}`
         }
       };
       jsonObject[0].modules.push(newSection);
