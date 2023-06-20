@@ -1,7 +1,7 @@
 const
-  servers = "https://sr-api.sfirew.com/server/",
-  render = "https://visage.surgeplay.com/",
-  mojang = "https://api.mojang.com/";
+  servers = "https://sr-api.sfirew.com/server",
+  render = "https://visage.surgeplay.com",
+  mojang = "https://api.mojang.com";
 
 export interface MCUser {id: string, name: string}
 export async function getUser(username: string) : Promise<MCUser> {
@@ -16,7 +16,7 @@ export function renderView(user: MCUser) {
     skinBust: `${render}/bust/${user.id}`,
     skinView: `${render}/full/${user.id}`,
     download: `${render}/processedskin/${user.id}`,
-    headView: `${render}/head/body/${user.id}`,
+    headView: `${render}/head/${user.id}`,
     headFace: `${render}/face/${user.id}`,
     gethead: {
       "new": `/give @p minecraft:player_head{SkullOwner:"${user.name}"}`,
