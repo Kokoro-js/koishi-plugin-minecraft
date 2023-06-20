@@ -1,7 +1,7 @@
 const
-  servers = "https://sr-api.sfirew.com/server/",
-  render = "https://visage.surgeplay.com/",
-  mojang = "https://api.mojang.com/";
+  servers = "https://sr-api.sfirew.com/server",
+  render = "https://visage.surgeplay.com",
+  mojang = "https://api.mojang.com";
 
 export interface MCUser {id: string, name: string}
 export async function getUser(username: string) : Promise<MCUser> {
