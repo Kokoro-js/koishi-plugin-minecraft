@@ -8,7 +8,7 @@ export interface Config {
 
 export default function apply(ctx: Context, config: Config) {
   const cfapi = new CurseforgeV1Client(config.CURSEFORGE_API_KEY);
-  ctx.logger.info("检测到填入 API key，启用 CurseForge 指令。");
+  ctx?.logger.info("检测到填入 API key，启用 CurseForge 指令。");
 
   const possibleFilter = {
     modpacks: 4471,

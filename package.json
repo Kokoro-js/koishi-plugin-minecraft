@@ -21,8 +21,8 @@
     "mc"
   ],
   "peerDependencies": {
-    "@koishijs/plugin-adapter-kook": "^3.8.1",
-    "koishi": "^4.15.0"
+    "@koishijs/plugin-adapter-kook": "^4.0.0",
+    "koishi": "^4.17.0"
   },
   "peerDependenciesMeta": {
     "@koishijs/plugin-adapter-kook": {
