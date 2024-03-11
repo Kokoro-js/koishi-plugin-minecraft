@@ -16,14 +16,13 @@
     "url": "https://github.com/ahdg6/koishi-plugin-minecraft/issues"
   },
   "license": "AGPLv3",
-  "scripts": {},
   "keywords": [
     "minecraft",
     "mc"
   ],
   "peerDependencies": {
     "@koishijs/plugin-adapter-kook": "^3.8.1",
-    "koishi": "^4.12.9"
+    "koishi": "^4.15.0"
   },
   "peerDependenciesMeta": {
     "@koishijs/plugin-adapter-kook": {
@@ -31,14 +30,14 @@
     }
   },
   "devDependencies": {
-    "@xmcl/curseforge": "^2.0.3",
-    "@xmcl/modrinth": "^2.1.0",
+    "@xmcl/curseforge": "^2.1.1",
+    "@xmcl/modrinth": "^2.3.1",
     "cheerio": "1.0.0-rc.12",
     "fastest-levenshtein": "^1.0.16"
   },
   "dependencies": {
-    "@xmcl/curseforge": "^2.0.3",
-    "@xmcl/modrinth": "^2.1.0",
+    "@xmcl/curseforge": "^2.1.1",
+    "@xmcl/modrinth": "^2.3.1",
     "cheerio": "1.0.0-rc.12",
     "fastest-levenshtein": "^1.0.16"
   }
