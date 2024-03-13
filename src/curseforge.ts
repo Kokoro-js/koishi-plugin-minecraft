@@ -77,7 +77,7 @@ export default function apply(ctx: Context, config: Config) {
       if (session.platform == "onebot" || "red") {
         const attrs = {
           userId: session.userId,
-          nickname: session.author?.nick || session.username,
+          nickname: session.author?.nickname || session.username,
         };
         const output = h("figure");
         for (const project of mods.slice(1)) {

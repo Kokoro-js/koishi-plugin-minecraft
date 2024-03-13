@@ -72,7 +72,7 @@ export function apply(ctx: Context, config: Config) {
 
     const attrs = {
       userId: session.userId,
-      nickname: session.author?.nick || session.username,
+      nickname: session.author?.nickname || session.username,
     };
 
     const result = h("figure");
@@ -233,7 +233,7 @@ export function apply(ctx: Context, config: Config) {
       if (session.platform == "onebot" || "red") {
         const attrs = {
           userId: session.userId,
-          nickname: session.author?.nick || session.username,
+          nickname: session.author?.nickname || session.username,
         };
         const output = h("figure");
         for (const project of result.hits.slice(1)) {
@@ -307,7 +307,7 @@ export function apply(ctx: Context, config: Config) {
       if (session.platform == "onebot" || "red") {
         const attrs = {
           userId: session.userId,
-          nickname: session.author?.nick || session.username,
+          nickname: session.author?.nickname || session.username,
         };
         const output = h("figure");
         for (const project of result.slice(1)) {
