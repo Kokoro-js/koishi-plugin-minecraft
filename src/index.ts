@@ -9,20 +9,25 @@ import { closest } from "fastest-levenshtein";
 import { scrapeWebsite } from "./mcmod";
 import { KookCard } from "./helper";
 import { MCUser } from "./api";
-import cf from "./curseforge";
+import CURSEFORGE, { Config as CURSEFORGE_CONFIG } from "./curseforge";
+import SERVER, { Config as SERVER_CONFIG } from "./server_ping";
 import type {} from "@koishijs/plugin-adapter-kook";
+import type {} from "@koishijs/plugin-notifier";
 
 export const name = "minecraft";
 
 export interface Config {
   CURSEFORGE_API_KEY: string;
+  SERVER: SERVER_CONFIG & IPluginEnableConfig;
 }
 
-export const Config: Schema<Config> = Schema.object({
-  CURSEFORGE_API_KEY: Schema.string().description(
-    "填写 CurseForge 提供的 API 用以搜索模组",
-  ),
-});
+export const Config: Schema<Config> = Schema.intersect([
+  CURSEFORGE_CONFIG,
+  Schema.object({
+    SERVER:
+      pluginLoad(SERVER_CONFIG).description("是否启用服务器查询相关功能。"),
+  }).description("服务器查询相关"),
+]);
 
 export function apply(ctx: Context, config: Config) {
   ctx.i18n.define("zh", require("./locales/zh-CN"));
@@ -40,7 +45,17 @@ export function apply(ctx: Context, config: Config) {
 
   const mcapi = new MCAPI(ctx.http);
   if (config.CURSEFORGE_API_KEY) {
-    ctx.plugin(cf, { CURSEFORGE_API_KEY: config.CURSEFORGE_API_KEY });
+    ctx.plugin(CURSEFORGE, { CURSEFORGE_API_KEY: config.CURSEFORGE_API_KEY });
+  }
+
+  if (config.SERVER.enabled) {
+    if (ctx.puppeteer !== undefined) {
+      ctx.inject(["puppeteer"], (ctx) => ctx.plugin(SERVER, config.SERVER));
+    } else {
+      ctx.notifier.create(
+        "请打开 Puppetter 以支持服务器查询，如果你需要不依赖本地渲染而是用 API 的方案请降级到 0.8.2。",
+      );
+    }
   }
 
   ctx.command("mcuser <uName:string>").action(async ({ session }, uName) => {
@@ -147,14 +162,6 @@ export function apply(ctx: Context, config: Config) {
       获取该玩家的头:
       1.12: ${view.gethead.old}
       1.13+: ${view.gethead.new}`;
-  });
-
-  ctx.command("mcserver <ip:string>").action(async ({ session }, ip) => {
-    const server = await mcapi.getServer(ip);
-    await session.send(h.image(server.banner));
-    await session.send(
-      `版本 ${server.version}, 在线玩家 ${server.players.online}`,
-    );
   });
 
   ctx
@@ -329,4 +336,26 @@ export function apply(ctx: Context, config: Config) {
     const index = arr.findIndex((item) => item === value);
     return index !== -1 ? index + 1 : -1;
   }
+}
+
+// Thank you! Kbot!
+// https://github.com/Kabuda-czh/koishi-plugin-kbot/blob/master/plugins/kbot/src/index.ts#L116
+function pluginLoad<T>(schema: Schema<T>): Schema<T & IPluginEnableConfig> {
+  return Schema.intersect([
+    Schema.object({
+      enabled: Schema.boolean().default(false).description("是否启用插件"),
+    }),
+    Schema.union([
+      Schema.object({
+        enabled: Schema.const(true).required(),
+        ...schema.dict,
+      }),
+      Schema.object({
+        enabled: Schema.const(false),
+      }),
+    ]) as Schema<T>,
+  ]);
+}
+interface IPluginEnableConfig {
+  enabled: boolean;
 }

@@ -1,14 +1,22 @@
-import { Context, h } from "koishi";
+import { Context, h, Logger, Schema } from "koishi";
 import { CurseforgeV1Client, Mod, SearchOptions } from "@xmcl/curseforge";
 import { closest } from "fastest-levenshtein";
 
+export const name = "minecraft-curseforge";
 export interface Config {
   CURSEFORGE_API_KEY: string;
 }
 
+export const Config: Schema<Config> = Schema.object({
+  CURSEFORGE_API_KEY: Schema.string().description(
+    "填写 CurseForge 提供的 API 用以搜索模组",
+  ),
+});
+
 export default function apply(ctx: Context, config: Config) {
+  const logger = ctx?.logger(name) || new Logger(name);
   const cfapi = new CurseforgeV1Client(config.CURSEFORGE_API_KEY);
-  ctx?.logger.info("检测到填入 API key，启用 CurseForge 指令。");
+  logger.info("检测到填入 API key，启用 CurseForge 指令。");
 
   const possibleFilter = {
     modpacks: 4471,
