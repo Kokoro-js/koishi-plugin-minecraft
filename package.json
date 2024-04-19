@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-minecraft",
   "description": "Minecraft 查询正版用户数据和服务器状态，现支持 MCMOD, Modrinth, CurseForge 模组搜索！",
-  "version": "0.8.4",
+  "version": "0.8.6",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
