@@ -1,6 +1,5 @@
 import { Context, h, Logger, Schema } from "koishi";
-import server from "minecraftstatuspinger";
-import { ServerStatus } from "minecraftstatuspinger/dist/types";
+import server from "@ahdg/minecraftstatuspinger";
 import { JSONToHTML } from "@sfirew/minecraft-motd-parser";
 import type {} from "koishi-plugin-puppeteer";
 import { motdJsonType } from "@sfirew/minecraft-motd-parser/types/types";
@@ -24,7 +23,7 @@ export default function apply(ctx: Context, config: Config) {
     .command("mcserver <ip:string> [port:number]")
     .action(async ({ session }, ip, port) => {
       if (!ip) ip = config.DEFAULT_SERVER;
-      let result: ServerStatus;
+      let result;
       try {
         result = await server.lookup({
           host: ip,
@@ -114,7 +113,7 @@ function generateFullHtml(
 <div class="server-banner">
   <img src="${status.favicon}" alt="Server Icon" class="server-icon">
   <div class="server-info">
-    <div class="server-name">${serverName} - ${status.players.online}/${status.players.max} | Ping: ${latency}</div>
+    <div class="server-name">${serverName} - ${status.players.online}/${status.players.max} | Ping: ${latency} | 类型: ${status.version.name}</div>
     <div class="server-motd">
       ${motdHTML}
     </div>

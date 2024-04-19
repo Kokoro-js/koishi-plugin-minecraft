@@ -22,8 +22,8 @@
   ],
   "peerDependencies": {
     "@koishijs/plugin-adapter-kook": "^4.0.0",
-    "koishi-plugin-puppeteer": "^3.4.0",
-    "koishi": "^4.17.0"
+    "koishi": "^4.17.0",
+    "koishi-plugin-puppeteer": "^3.4.0"
   },
   "peerDependenciesMeta": {
     "@koishijs/plugin-adapter-kook": {
@@ -40,11 +40,11 @@
     "fastest-levenshtein": "^1.0.16"
   },
   "dependencies": {
+    "@ahdg/minecraftstatuspinger": "^1.1.5",
     "@sfirew/minecraft-motd-parser": "^1.1.2-1",
     "@xmcl/curseforge": "^2.1.1",
     "@xmcl/modrinth": "^2.3.1",
     "cheerio": "1.0.0-rc.12",
-    "fastest-levenshtein": "^1.0.16",
-    "minecraftstatuspinger": "^1.1.5"
+    "fastest-levenshtein": "^1.0.16"
   }
 }
