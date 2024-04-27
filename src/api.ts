@@ -36,45 +36,4 @@ export default class MCAPI {
       },
     };
   }
-
-  async getServer(ip: string): Promise<ServerInfo & { banner: string }> {
-    const domainRegex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}(:[0-9]{1,5})?$/;
-    if (!domainRegex.test(ip)) new TypeError(`No Ip Provided!`);
-    const data = await this.http.get<ServerInfo>(`${this.servers}/${ip}`);
-    return {
-      banner: `${this.servers}/${ip}/banner/motd.png`,
-      ...data,
-    };
-  }
-}
-export interface ServerInfo {
-  ip: string;
-  port: number;
-  online: boolean;
-  isp: {
-    name: string;
-    city: string;
-    location: string;
-    distance: string;
-  };
-  hostname: string;
-  query_place: string;
-  query_host_id: string;
-  icon: string;
-  raw: string;
-  html: string;
-  info: {
-    raw: any[];
-    html: string;
-  };
-  players: {
-    max: number;
-    online: number;
-    sample: any[];
-  };
-  version: {
-    name: string;
-    protocol: number;
-  };
-  ping: number;
 }

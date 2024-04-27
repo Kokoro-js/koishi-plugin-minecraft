@@ -49,13 +49,14 @@ export function apply(ctx: Context, config: Config) {
   }
 
   if (config.SERVER.enabled) {
-    if (ctx.puppeteer !== undefined) {
-      ctx.inject(["puppeteer"], (ctx) => ctx.plugin(SERVER, config.SERVER));
-    } else {
-      ctx.notifier.create(
-        "请打开 Puppetter 以支持服务器查询，如果你需要不依赖本地渲染而是用 API 的方案请降级到 0.8.2。",
-      );
-    }
+    ctx.inject(["puppeteer"], (ctx) => {
+      if (ctx?.puppeteer == undefined) {
+        ctx.notifier.create(
+          "请打开 Puppeteer 以支持服务器查询，如果你需要不依赖本地渲染而是用 API 的方案请降级到 0.8.2。",
+        );
+      }
+      ctx.plugin(SERVER, config.SERVER);
+    });
   }
 
   ctx.command("mcuser <uName:string>").action(async ({ session }, uName) => {

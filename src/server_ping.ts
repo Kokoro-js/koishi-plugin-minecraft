@@ -113,7 +113,7 @@ function generateFullHtml(
 <div class="server-banner">
   <img src="${status.favicon}" alt="Server Icon" class="server-icon">
   <div class="server-info">
-    <div class="server-name">${serverName} - ${status.players.online}/${status.players.max} | Ping: ${latency} | 类型: ${status.version.name}</div>
+    <div class="server-name">${serverName} | 玩家：${status.players.online}/${status.players.max} | Ping: ${latency} | 类型: ${status.version.name}</div>
     <div class="server-motd">
       ${motdHTML}
     </div>
